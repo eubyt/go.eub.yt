@@ -1,0 +1,17 @@
+version: "3.6"
+services:
+  goservice:
+    build: "."
+    ports:
+      - "8080:8080"
+    volumes:
+      - go-eub-yt:/go-eub-yt
+  nginx:
+    build: "./nginx"
+    ports:
+      - "80:80"
+    depends_on:
+      - "goservice"
+
+volumes:
+  go-eub-yt:

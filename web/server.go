@@ -35,7 +35,7 @@ func ListenAndServe() error {
 	mux.HandleFunc("/api/shorten", RegisterShortener)
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		const mydir = "./"
+		const mydir = "/go-eub-yt"
 		isFileExist := checkFileExists(mydir + r.URL.Path)
 
 		if isFileExist {
@@ -52,7 +52,7 @@ func ListenAndServe() error {
 		}
 	})
 
-	println("Listening on port 3000")
+	println("Listening on port 8080")
 
-	return http.ListenAndServe(":3000", mux)
+	return http.ListenAndServe(":8080", mux)
 }
