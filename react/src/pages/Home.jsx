@@ -1,17 +1,45 @@
 import { useState } from 'react';
 
-function StateInitial({ setState, setUrlShort }) {
+function validURL(str) {
+  const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+    '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+    '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+    '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+  return !!pattern.test(str);
+}
+
+function protocolExist(url) {
+  return url.startsWith('http://') || url.startsWith('https://');
+}
+
+function StateInitial({ setState, setUrlShort, setAlert }) {
   const [url, setUrl] = useState('');
 
   async function onClickShort(e) {
+    let newUrl = url;
     e.preventDefault();
+    setAlert('');
+
+    // TODO adicionar alerta de URL inválida
+    if (!validURL(url)) {
+      setAlert('URL inválida');
+      return;
+    }
+
+    // Adicionar protocolo se não existir
+    if (!protocolExist(url)) {
+      newUrl = `https://${url}`
+    }
+
     setState('loading');
     const api = await fetch('/api/shorten', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ url }),
+      body: JSON.stringify({ newUrl }),
     })
     const data = await api.json();
     if (api.status === 201) {
@@ -86,6 +114,7 @@ function StateShortened({ urlShort }) {
 function App() {
   const [urlShort, setUrlShort] = useState('example.com');
   const [state, setState] = useState('initial');
+  const [alert, setAlert] = useState('');
 
   return (
     <div className="application">
@@ -98,11 +127,12 @@ function App() {
             <p className="mt-3 text-lg leading-6 text-gray-500">
               Apenas um encurtador de links simples e rápido.
             </p>
+            {alert && <div className="mt-3 text-sm leading-5 text-red-600">{alert}</div>}
           </div>
 
           <div className="mt-6">
             <div className="mt-6">
-              {state === 'initial' && <StateInitial setState={setState} setUrlShort={setUrlShort} />}
+              {state === 'initial' && <StateInitial setState={setState} setUrlShort={setUrlShort} setAlert={setAlert} />}
               {state === 'loading' && <StateLoading />}
               {state === 'shortened' && <StateShortened urlShort={urlShort} />}
             </div>
