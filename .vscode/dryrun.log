@@ -1,0 +1,8 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/eubyt/projects/go.eub.yt'
+cd react && yarn build
+cd react && mv build ../
+go build
+mv -b goeubyt build
+make: Leaving directory '/home/eubyt/projects/go.eub.yt'
+ 
