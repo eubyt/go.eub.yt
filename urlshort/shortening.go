@@ -23,8 +23,13 @@ func randomString(length int) string {
 }
 
 // eub.yt/HYLNr5GuVf
-func CreateShortURL(url string) (Shortener, error) {
+func CreateShortURL(url string, customUrl string) (Shortener, error) {
 	var code = randomString(random_string_length)
+
+	if customUrl != "" {
+		code = customUrl
+	}
+
 	exist, err := DATABASE.CheckExistURL(url)
 	if err != nil {
 		return Shortener{}, err

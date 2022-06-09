@@ -16,6 +16,8 @@ function protocolExist(url) {
 
 function StateInitial({ setState, setUrlShort, setAlert }) {
   const [url, setUrl] = useState('');
+  const [custom, setCustom] = useState(false);
+  const [customUrl, setCustomUrl] = useState(null);
 
   async function onClickShort(e) {
     let newUrl = url;
@@ -39,7 +41,7 @@ function StateInitial({ setState, setUrlShort, setAlert }) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ newUrl }),
+      body: JSON.stringify({ url: newUrl, customUrl: custom ? customUrl : null }),
     })
     const data = await api.json();
     if (api.status === 201) {
@@ -63,8 +65,31 @@ function StateInitial({ setState, setUrlShort, setAlert }) {
           onChange={(e) => setUrl(e.target.value)}
         />
       </div>
-      <div className="mt-6">
-        <span className="block w-full rounded-md shadow-sm">
+      {custom && <div className="mt-6">
+        <div className="pl-4 pr-4 rounded-md shadow-sm flex items-center">
+          <span className="text-gray-500 text-xl font-normal">go.eub.yt/</span>
+          <input
+            id="customUrl"
+            type="text"
+            placeholder="URL personalizada"
+            required
+            autoComplete="off"
+            className="py-4 rounded-md w-full text-gray-500 focus:outline-none focus:shadow-outline border-transparent text-xl font-normal"
+            onChange={(e) => setCustomUrl(e.target.value)}
+          />
+        </div>
+      </div>}
+      <div className="mt-6 flex justify-between">
+        <div>
+          <button
+            type="button"
+            onClick={() => setCustom(!custom)}
+            className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded-md"
+          >
+            Customizar
+          </button>
+        </div>
+        <div>
           <button
             type="submit"
             onClick={onClickShort}
@@ -72,8 +97,9 @@ function StateInitial({ setState, setUrlShort, setAlert }) {
           >
             Shorten
           </button>
-        </span>
+        </div>
       </div>
+
     </form>
   </>
 }
@@ -105,6 +131,16 @@ function StateShortened({ urlShort }) {
           onClick={() => navigator.clipboard.writeText(urlShort)}
         >
           Copiar
+        </button>
+      </div>
+
+      <div className="mt-6 text-xl font-bold">
+        <button
+          type="button"
+          onClick={() => window.location.reload()}
+          className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded-md"
+        >
+          Voltar
         </button>
       </div>
     </div>

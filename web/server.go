@@ -27,7 +27,7 @@ func JsonHandler(w http.ResponseWriter, r *http.Request, data interface{}, statu
 
 func staticFilesHandler(w http.ResponseWriter, r *http.Request) bool {
 	const staticDir = "/go/bin"
-	path := r.URL.Path
+	path := strings.Replace(r.URL.Path, "..", "", -1)
 	extensionList := []string{".css", ".js", ".png", ".jpg", ".jpeg", ".gif", ".ico", ".svg", ".txt", ".html"}
 
 	if path == "/" {

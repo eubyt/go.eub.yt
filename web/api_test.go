@@ -1,6 +1,8 @@
 package web
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestIsUrlValid(t *testing.T) {
 	listString := []string{
