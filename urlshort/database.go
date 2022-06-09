@@ -22,7 +22,7 @@ var DATABASE = Connection{}
 
 func (c *Connection) Connect(name string) {
 	var err error
-	nameFormat := fmt.Sprintf("/go-eub-yt/%s.db", name)
+	nameFormat := fmt.Sprintf("/go-eub-yt-sql/%s.db", name)
 	c.db, err = sql.Open("sqlite3", nameFormat)
 	if err != nil {
 		log.Fatal("error opening/create database: ", err)

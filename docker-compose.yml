@@ -5,6 +5,6 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - go-eub-yt:/go-eub-yt
+      - go-eub-yt-sql:/go-eub-yt-sql
 volumes:
-  go-eub-yt:
+  go-eub-yt-sql:

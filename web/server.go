@@ -25,6 +25,28 @@ func JsonHandler(w http.ResponseWriter, r *http.Request, data interface{}, statu
 	json.NewEncoder(w).Encode(data)
 }
 
+func staticFilesHandler(w http.ResponseWriter, r *http.Request) bool {
+	const staticDir = "/go/bin"
+	path := r.URL.Path
+	extensionList := []string{".css", ".js", ".png", ".jpg", ".jpeg", ".gif", ".ico", ".svg", ".txt", ".html"}
+
+	if path == "/" {
+		path = "/index.html"
+	}
+
+	for _, extension := range extensionList {
+		if strings.HasSuffix(path, extension) {
+			isFileExist := checkFileExists(staticDir + r.URL.Path)
+			if isFileExist {
+				http.FileServer(http.Dir(staticDir)).ServeHTTP(w, r)
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
 func ListenAndServe() error {
 	mux := http.NewServeMux()
 
@@ -35,14 +57,8 @@ func ListenAndServe() error {
 	mux.HandleFunc("/api/shorten", RegisterShortener)
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		const mydir = "/go-eub-yt"
-		isFileExist := checkFileExists(mydir + r.URL.Path)
-
-		if isFileExist {
-			// Pagina HTML - Index
-			http.FileServer(http.Dir(mydir)).ServeHTTP(w, r)
-		} else {
-			// Se não achar o nome do arquivo na pasta do front-end realizar o redirect para os sites - Url Shortener
+		// Se não achar o nome do arquivo na pasta do front-end realizar o redirect para os sites - Url Shortener
+		if !staticFilesHandler(w, r) {
 			result, err := urlshort.SearchShortURL(strings.Split(r.URL.Path, "/")[1])
 			if err != nil {
 				JsonHandler(w, r, &Response{Message: "not exist"}, http.StatusNotFound)

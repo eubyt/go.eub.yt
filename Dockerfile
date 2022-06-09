@@ -1,5 +1,4 @@
 FROM golang:1.18.3-alpine3.16 AS build
-# Support CGO and SSL
 RUN apk --no-cache add gcc g++ make
 RUN apk add git
 RUN apk add npm
@@ -12,10 +11,9 @@ RUN cd react && npm install && npm run build
 
 
 
-FROM alpine:3.10
-RUN apk --no-cache add ca-certificates
+FROM alpine:3.16
 WORKDIR /usr/bin
 COPY --from=build /go/src/app/bin /go/bin
-COPY --from=build /go/src/app/react/build /go-eub-yt
+COPY --from=build /go/src/app/react/build /go/bin
 EXPOSE 8080
 ENTRYPOINT /go/bin/server --port 8080
