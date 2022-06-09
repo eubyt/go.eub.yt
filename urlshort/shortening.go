@@ -45,6 +45,15 @@ func CreateShortURL(url string, customUrl string) (Shortener, error) {
 		return Shortener{code, url}, nil
 	}
 
+	exist, err = DATABASE.CheckExistCode(code)
+	if err != nil {
+		return Shortener{}, err
+	}
+
+	if exist {
+		code = randomString(random_string_length)
+	}
+
 	result, err := DATABASE.Insert(url, code)
 	if err != nil {
 		return Shortener{}, err
