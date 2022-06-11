@@ -36,7 +36,7 @@ func TestIsUrlNotValid(t *testing.T) {
 	}
 
 	for _, url := range listString {
-		if IsUrl(url) {
+		if isUrl(url) {
 			t.Errorf("%s is a valid url", url)
 		} else {
 			t.Logf("%s is not a valid url", url)
